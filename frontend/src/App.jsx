@@ -1,31 +1,26 @@
 import Navbar from "./components/Navbar";
 
-import {HomePage}  from "./pages/HomePage";
-import { SettingsPage } from "./pages/SettingsPage";
-import { LoginPage } from "./pages/LoginPage";
-import { SignUpPage } from "./pages/SignUpPage";
-import { ProfilePage } from "./pages/ProfilePage";
-import {Routes , Route} from "react-router-dom";
+import HomePage from "./pages/HomePage.jsx";
+import SignUpPage from "./pages/SignUpPage_TEMP.jsx";
+import LoginPage from "./pages/LoginPage";
+import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
+
+import { Routes, Route, Navigate } from "react-router-dom";
+
 const App = () => {
   return (
     <div>
-
-
       <Navbar />
-
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={<ProfliePage />} />
-        
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
-
-
-      
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
