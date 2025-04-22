@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { axiosInstance } from "../lib/axios";
+import { axiosInstance } from "../lib/axios.js";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -7,8 +7,7 @@ export const useAuthStore = create((set) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
 
-  isCheckingAuth: true, // ✅ Corrected the key to camelCase with capital C
-
+  isCheckingAuth: true, 
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("http://localhost:5001/api/auth/check");
@@ -18,7 +17,7 @@ export const useAuthStore = create((set) => ({
       console.log("Error in checkAuth:", error);
       set({ authUser: null });
     } finally {
-      set({ isCheckingAuth: false }); // ✅ Must match the key above
+      set({ isCheckingAuth: false }); 
     }
   },
 }));

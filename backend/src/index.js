@@ -15,7 +15,7 @@ const port = process.env.PORT;
 
 // Middleware
 app.use(express.json());
-app.use(cookieParser)
+app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
