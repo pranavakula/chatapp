@@ -5,6 +5,7 @@ import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
+  console.log("Incoming signup payload:", { fullName, email, password }); 
   try {
     // hash password
     if (!fullName || !email || !password) {

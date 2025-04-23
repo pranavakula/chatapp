@@ -19,6 +19,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
+app.use(express.json()); // <-- required for reading req.body
 app.use(cors({
   origin: "http://localhost:5173",
   credentials:true
