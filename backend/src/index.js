@@ -4,26 +4,26 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDb } from "./lib/db.js";
 import cookieParser from "cookie-parser";
-import cors from "cors"
+import cors from "cors";
 
-// Load env variables first
+// Load env variables
 dotenv.config();
 
-// Initialize express app BEFORE using it
+// Initialize express app
 const app = express();
 const port = process.env.PORT;
 
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
-app.use(express.json()); // <-- required for reading req.body
+// ✅ Use Middlewares (Order matters)
 app.use(cors({
   origin: "http://localhost:5173",
-  credentials:true
-}))
+  credentials: true
+}));
+app.use(express.json());
+app.use(cookieParser());
+
+// ✅ Use Routes (after middlewares)
+app.use("/api/auth", authRoutes);
+app.use("/api/message", messageRoutes);
 
 // Start server
 app.listen(port, () => {
