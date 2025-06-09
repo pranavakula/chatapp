@@ -34,47 +34,57 @@ export const useChatStore = create((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
+
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
       const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
-      set({ messages: [...messages, res.data] });
+      const newMessage = res.data;
+      
+      // Update local messages immediately
+      set({ messages: [...messages, newMessage] });
+
+      // Emit the message via socket for real-time delivery
+      const socket = useAuthStore.getState().socket;
+      if (socket) {
+        socket.emit("sendMessage", newMessage);
+      }
     } catch (error) {
       toast.error(error.response.data.message);
     }
   },
 
   subscribeToMessages: () => {
-  const { selectedUser } = get();
-  if (!selectedUser) return;
+    const { selectedUser } = get();
+    if (!selectedUser) return;
 
-  const socket = useAuthStore.getState().socket;
-  if (!socket) {
-    console.warn("Socket is not initialized — cannot subscribe to messages.");
-    return;
-  }
+    const socket = useAuthStore.getState().socket;
+    if (!socket) {
+      console.warn("Socket is not initialized — cannot subscribe to messages.");
+      return;
+    }
 
-  socket.on("newMessage", (newMessage) => {
-    const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-    if (!isMessageSentFromSelectedUser) return;
-
-    set({
-      messages: [...get().messages, newMessage],
+    // Listen for new messages
+    socket.on("newMessage", (newMessage) => {
+      const { messages } = get();
+      // Only add the message if it's not already in the messages array
+      if (!messages.some(msg => msg._id === newMessage._id)) {
+        set({
+          messages: [...messages, newMessage],
+        });
+      }
     });
-  });
-},
-
+  },
 
   unsubscribeFromMessages: () => {
-  const socket = useAuthStore.getState().socket;
-  if (!socket) {
-    console.warn("Socket is null — cannot unsubscribe.");
-    return;
-  }
+    const socket = useAuthStore.getState().socket;
+    if (!socket) {
+      console.warn("Socket is null — cannot unsubscribe.");
+      return;
+    }
 
-  socket.off("newMessage");
-},
-
+    socket.off("newMessage");
+  },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

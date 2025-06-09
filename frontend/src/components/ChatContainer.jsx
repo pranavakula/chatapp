@@ -7,8 +7,9 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+
 const ChatContainer = () => {
-    const {
+  const {
     messages,
     getMessages,
     isMessagesLoading,
@@ -19,16 +20,21 @@ const ChatContainer = () => {
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
 
+  // Load messages and subscribe to real-time updates when selected user changes
   useEffect(() => {
-    getMessages(selectedUser._id);
+    if (selectedUser?._id) {
+      getMessages(selectedUser._id);
+      subscribeToMessages();
 
-    subscribeToMessages();
+      return () => {
+        unsubscribeFromMessages();
+      };
+    }
+  }, [selectedUser?._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
-    return () => unsubscribeFromMessages();
-  }, [selectedUser._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
-
+  // Scroll to bottom when messages change
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
@@ -52,9 +58,8 @@ const ChatContainer = () => {
           <div
             key={message._id}
             className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-            ref={messageEndRef}
           >
-            <div className=" chat-image avatar">
+            <div className="chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img
                   src={
@@ -83,6 +88,7 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
+        <div ref={messageEndRef} />
       </div>
 
       <MessageInput />
@@ -90,4 +96,4 @@ const ChatContainer = () => {
   );
 }
 
-export default ChatContainer
+export default ChatContainer;

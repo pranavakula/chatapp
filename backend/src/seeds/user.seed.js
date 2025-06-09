@@ -105,6 +105,9 @@ const seedDatabase = async () => {
   try {
     await connectDb();
 
+    // Clear existing users
+    await User.deleteMany({});
+
     // Hash passwords before creating users
     const hashedUsers = await Promise.all(
       seedUsers.map(async (user) => {
