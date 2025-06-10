@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { THEMES } from "../constants";
 import { useThemeStore } from "../store/useThemeStore";
 import { Send } from "lucide-react";
@@ -10,6 +10,23 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
+
+  // Apply theme to preview elements
+  useEffect(() => {
+    const previewElements = document.querySelectorAll('[data-theme]');
+    previewElements.forEach(element => {
+      element.setAttribute('data-theme', theme);
+    });
+  }, [theme]);
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    // Force a re-render of the preview
+    const previewElements = document.querySelectorAll('[data-theme]');
+    previewElements.forEach(element => {
+      element.setAttribute('data-theme', newTheme);
+    });
+  };
 
   return (
     <div className="h-screen container mx-auto px-4 pt-20 max-w-5xl">
@@ -27,7 +44,7 @@ const SettingsPage = () => {
                 group flex flex-col items-center gap-1.5 p-2 rounded-lg transition-colors
                 ${theme === t ? "bg-base-200" : "hover:bg-base-200/50"}
               `}
-              onClick={() => setTheme(t)}
+              onClick={() => handleThemeChange(t)}
             >
               <div className="relative h-8 w-full rounded-md overflow-hidden" data-theme={t}>
                 <div className="absolute inset-0 grid grid-cols-4 gap-px p-1">
@@ -46,7 +63,7 @@ const SettingsPage = () => {
 
         {/* Preview Section */}
         <h3 className="text-lg font-semibold mb-3">Preview</h3>
-        <div className="rounded-xl border border-base-300 overflow-hidden bg-base-100 shadow-lg">
+        <div className="rounded-xl border border-base-300 overflow-hidden bg-base-100 shadow-lg" data-theme={theme}>
           <div className="p-4 bg-base-200">
             <div className="max-w-lg mx-auto">
               {/* Mock Chat UI */}

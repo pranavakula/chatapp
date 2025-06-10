@@ -25,6 +25,11 @@ const App = () => {
     checkAuth();
   }, [checkAuth]);
 
+  // Apply theme on initial load
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
   console.log({ authUser });
 
   if (isCheckingAuth && !authUser)

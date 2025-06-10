@@ -50,17 +50,17 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
+    <div className="flex-1 flex flex-col overflow-hidden bg-base-100">
       <ChatHeader />
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-base-100">
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"} gap-2`}
           >
             <div className="chat-image avatar">
-              <div className="size-10 rounded-full border">
+              <div className="size-10 rounded-full border-2 border-base-300">
                 <img
                   src={
                     message.senderId === authUser._id
@@ -68,6 +68,7 @@ const ChatContainer = () => {
                       : selectedUser.profilePic || "/avatar.png"
                   }
                   alt="profile pic"
+                  className="object-cover"
                 />
               </div>
             </div>
@@ -76,7 +77,11 @@ const ChatContainer = () => {
                 {formatMessageTime(message.createdAt)}
               </time>
             </div>
-            <div className="chat-bubble flex flex-col">
+            <div className={`chat-bubble flex flex-col ${
+              message.senderId === authUser._id 
+                ? "bg-primary text-primary-content" 
+                : "bg-base-200 text-base-content"
+            } shadow-sm`}>
               {message.image && (
                 <img
                   src={message.image}
